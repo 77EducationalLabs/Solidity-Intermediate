@@ -1,0 +1,3 @@
+[submodule "NebulaQuest/lib/forge-std"]
+	path = NebulaQuest/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
