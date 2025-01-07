@@ -102,7 +102,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
         if(examAnswers.length < ONE) revert NebulaQuest_NonExistentExam(_examIndex);
         if(examAnswers.length != _encryptedAnswers.length) revert NebulaQuest_MustAnswerAllQuestions(_encryptedAnswers.length, examAnswers.length);
 
-        uint16 score;
+        uint16 score = 0;
 
         for (uint256 i; i < examAnswers.length; ++i){
             if(_encryptedAnswers[i] == examAnswers[i]){
