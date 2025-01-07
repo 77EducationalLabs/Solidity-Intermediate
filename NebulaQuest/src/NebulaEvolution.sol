@@ -4,8 +4,7 @@ pragma solidity 0.8.26;
 
 
 /// IMPORTS
-import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import {ERC721URIStorage, Strings} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import {ERC721URIStorage, ERC721, Strings} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
@@ -33,9 +32,9 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
     ///@notice variable to store the MINTER_ROLE hash
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     ///@notice variable to store the max level of a NFT
-    uint256 constant TOTAL_LEVELS = 7;
+    uint8 constant TOTAL_LEVELS = 7;
     ///@notice magical number removal
-    uint256 constant ONE = 1;
+    uint8 constant ONE = 1;
 
     /// State Variable ///
     ///@notice variable to store the tokens Id.
@@ -87,39 +86,21 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
         *@dev only the MINTER can call this functions
         *@dev One user can't have multiple NFTs per wallet
     */
-    function safeMint(address _user) external onlyRole(MINTER_ROLE) returns(uint256 tokenId){
+    function safeMint(address _user) external payable onlyRole(MINTER_ROLE) returns(uint256 _tokenId){
         if(balanceOf(_user) >= ONE) revert NebulaEvolution_AlreadyHasAnNFT();
 
-        tokenId = s_tokenId;
-
-        string memory uri = Base64.encode(
-            bytes(
-                string(
-                    abi.encodePacked(
-                        '{"name": "', s_starInformation[1].name, '",'
-                        '"description": "Nebula Evolution",',
-                        '"image": "', s_starInformation[1].image, '",'
-                        '"attributes": [',
-                            '{"trait_type": "Exp",',
-                            '"value": ', "0",'}',
-                            ',{"trait_type": "Level",',
-                            '"value": ', "1",'}',
-                        ']}'
-                    )
-                )
-            )
-        );
-
-        string memory finalURI = string(
-            abi.encodePacked("data:application/json;base64,", uri)
-        );
+        _tokenId = s_tokenId;
 
         s_tokenId = s_tokenId + 1;
 
-        emit NebulaEvolution_TheGasIsFreezingABirthIsOnTheWay(tokenId);
+        emit NebulaEvolution_TheGasIsFreezingABirthIsOnTheWay(_tokenId);
 
-        _safeMint(_user, tokenId);
-        _setTokenURI(tokenId, finalURI);
+        _safeMint(_user, _tokenId);
+        _updateNFTMetadata({
+            _nftID: _tokenId,
+            _nftLevel: 0,
+            _nftExp: 0
+        });
     }
 
     /**
@@ -128,7 +109,7 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
      * @param _exp The EXP amount received
      * @dev this functions must only be called by Main contract
     */
-    function updateNFT(uint256 _tokenId, uint256 _exp) external onlyRole(MINTER_ROLE){
+    function updateNFT(uint256 _tokenId, uint256 _exp) external payable onlyRole(MINTER_ROLE){
         if(_tokenId > s_tokenId) revert NebulaEvolution_InvalidNFTId();
 
         uint256 i = 1;
@@ -150,7 +131,7 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
         *@param _amountOfExp the amount of exp to be updated
         *@dev this function must only be called by the admin/owner
     */
-    function levelsSetter(uint256 _level, uint256 _amountOfExp) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function levelsSetter(uint256 _level, uint256 _amountOfExp) external payable onlyRole(DEFAULT_ADMIN_ROLE) {
         if(_level > TOTAL_LEVELS) revert NebulaEvolution_ThereAreOnlySevenLevels(_level);
 
         s_expPerLevel[_level] = _amountOfExp;
@@ -172,11 +153,11 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
     /// Private ///
     /**
         *@notice private function to process METADATA updates
-        *@param _tokenId the Id of the token which needs to be updated
+        *@param _nftID the Id of the token which needs to be updated
         *@param _nftLevel the level of the NFT
-        *@param _exp the total amount of experience this NFT have
+        *@param _nftExp the total amount of experience this NFT have
     */
-    function _updateNFTMetadata(uint256 _tokenId, uint256 _nftLevel, uint256 _exp) private {
+    function _updateNFTMetadata(uint256 _nftID, uint256 _nftLevel, uint256 _nftExp) private {
 
         string memory uri = Base64.encode(
             bytes(
@@ -189,7 +170,7 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
                             ',{"trait_type": "Level",',
                             '"value": ', _nftLevel.toString(),'}',
                             '{"trait_type": "Exp",',
-                            '"value": ', _exp.toString(),'}',
+                            '"value": ', _nftExp.toString(),'}',
                         ']}'
                     )
                 )
@@ -201,9 +182,9 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
             abi.encodePacked("data:application/json;base64,", uri)
         );
         
-        emit NebulaEvolution_NFTUpdated(_tokenId, finalURI);
+        emit NebulaEvolution_NFTUpdated(_nftID, finalURI);
 
-        _setTokenURI(_tokenId, finalURI);
+        _setTokenURI(_nftID, finalURI);
     }
 }
 

@@ -5,9 +5,8 @@ pragma solidity 0.8.26;
 /////////////
 ///Imports///
 /////////////
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import {ERC20Permit, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
 ////////////
 ///Errors///
@@ -86,7 +85,7 @@ contract NebulaQuestCoin is ERC20, AccessControl, ERC20Permit {
         * @param _amount The amount of tokens to be minted
         * @dev This function must only be accessed by authorized actors.
     */
-    function mint(address _to, uint256 _amount) external onlyRole(MINTER_ROLE){
+    function mint(address _to, uint256 _amount) external payable onlyRole(MINTER_ROLE){
         emit NebulaQuestCoin_TokenMinted(_to, _amount);
 
         _mint(_to, _amount);
@@ -97,7 +96,7 @@ contract NebulaQuestCoin is ERC20, AccessControl, ERC20Permit {
         * @param _amount The amount of tokens to be burned
         * @dev This functions must only accessed by authorized actors.
     */
-    function burn(uint256 _amount) external onlyRole(MINTER_ROLE){
+    function burn(uint256 _amount) external payable onlyRole(MINTER_ROLE){
         emit NebulaQuestCoin_TokenBurned(_amount);
 
         _burn(msg.sender, _amount);

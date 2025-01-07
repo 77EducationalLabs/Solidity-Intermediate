@@ -9,8 +9,7 @@ import {NebulaEvolution} from "./NebulaEvolution.sol";
 
 ///@notice OpenZeppelin tools
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 ///Errors///
@@ -48,13 +47,13 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
     ///@notice the maximum value a user can score
     uint16 constant MAX_SCORE = 1_000;
     ///@notice the score per correct answer
-    uint16 constant POINTS_ANSWER = 100;
+    uint8 constant POINTS_ANSWER = 100;
     ///@notice the allowed number of answers
     uint8 constant NUM_ANSWERS = 10;
     ///@notice token standard decimals
     uint256 constant DECIMALS = 10**18;
     ///@notice the number to check against to check for empty arrays
-    uint256 constant ONE = 1;
+    uint8 constant ONE = 1;
 
     ///Storage///
     ///@notice mapping to store the answers for each exam
@@ -98,13 +97,14 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
     */
     function submitAnswers(uint8 _examIndex, bytes32[] memory _encryptedAnswers) external nonReentrant{
         bytes32[] memory examAnswers = s_examAnswers[_examIndex];
+        uint256 arrayLength = examAnswers.length;
 
-        if(examAnswers.length < ONE) revert NebulaQuest_NonExistentExam(_examIndex);
-        if(examAnswers.length != _encryptedAnswers.length) revert NebulaQuest_MustAnswerAllQuestions(_encryptedAnswers.length, examAnswers.length);
+        if(arrayLength < ONE) revert NebulaQuest_NonExistentExam(_examIndex);
+        if(arrayLength != _encryptedAnswers.length) revert NebulaQuest_MustAnswerAllQuestions(_encryptedAnswers.length, arrayLength);
 
         uint16 score = 0;
 
-        for (uint256 i; i < examAnswers.length; ++i){
+        for (uint256 i; i < arrayLength; ++i){
             if(_encryptedAnswers[i] == examAnswers[i]){
                 score = score + POINTS_ANSWER;
             }
@@ -128,7 +128,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
         * @dev this function should only be called by the Owner
         * @dev this function must not accept an amount of answers different than NUM_ANSWERS
     */
-    function answerSetter(uint8 _examIndex, bytes32[] memory _correctAnswers) external onlyOwner {
+    function answerSetter(uint8 _examIndex, bytes32[] memory _correctAnswers) external payable onlyOwner {
         uint256 numberOfAnswers = _correctAnswers.length;
         if(numberOfAnswers != NUM_ANSWERS) revert NebulaQuest_WrongAmountOfAnswers(numberOfAnswers, NUM_ANSWERS);
 
@@ -151,7 +151,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
         uint256 score = i_coin.balanceOf(msg.sender) / DECIMALS;
 
         if(i_nft.balanceOf(msg.sender) >= 1){
-            Student memory student = s_studentInfo[msg.sender];
+            Student storage student = s_studentInfo[msg.sender];
             
             i_nft.updateNFT(student.nftId, score);
         } else {
