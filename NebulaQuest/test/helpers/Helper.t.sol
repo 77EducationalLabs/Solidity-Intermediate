@@ -146,9 +146,9 @@ abstract contract Helper is Test {
                         '"description": "Nebula Evolution",',
                         '"image": "', _image, '",'
                         '"attributes": [',
-                            ',{"trait_type": "Level",',
+                            '{"trait_type": "Level",',
                             '"value": ', _nftLevel.toString(),'}',
-                            '{"trait_type": "Exp",',
+                            ',{"trait_type": "Exp",',
                             '"value": ', _exp.toString(),'}',
                         ']}'
                     )
