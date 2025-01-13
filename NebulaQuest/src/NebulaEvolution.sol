@@ -112,15 +112,13 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
     function updateNFT(uint256 _tokenId, uint256 _exp) external payable onlyRole(MINTER_ROLE){
         if(_tokenId > s_tokenId) revert NebulaEvolution_InvalidNFTId();
 
-        uint256 i = 1;
         uint256 nftLevel;
 
-        while(i < TOTAL_LEVELS){
-            if(_exp < s_expPerLevel[i]){
-                nftLevel = i - 1;
+        for (uint256 level = TOTAL_LEVELS; level > ONE; level--) {
+            if (_exp >= s_expPerLevel[level]) {
+                nftLevel = level;
                 break;
             }
-            ++i;
         }
         _updateNFTMetadata(_tokenId, nftLevel, _exp);
     }
@@ -167,9 +165,9 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
                         '"description": "Nebula Evolution",',
                         '"image": "', s_starInformation[_nftLevel].image, '",'
                         '"attributes": [',
-                            ',{"trait_type": "Level",',
+                            '{"trait_type": "Level",',
                             '"value": ', _nftLevel.toString(),'}',
-                            '{"trait_type": "Exp",',
+                            ',{"trait_type": "Exp",',
                             '"value": ', _nftExp.toString(),'}',
                         ']}'
                     )
