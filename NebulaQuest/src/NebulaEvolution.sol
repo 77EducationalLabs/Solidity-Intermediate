@@ -8,14 +8,6 @@ import {ERC721URIStorage, ERC721, Strings} from "@openzeppelin/contracts/token/E
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
-/// ERRORS ///
-///@notice error emitted when the user already has an NFT
-error NebulaEvolution_AlreadyHasAnNFT();
-///@notice error emitted when the NFT id is bigger than the number of NFTs minted.
-error NebulaEvolution_InvalidNFTId();
-///@notice error emitted when the input level is bigger than the MAX
-error NebulaEvolution_ThereAreOnlySevenLevels(uint256 level);
-
 contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
 
     /// Types Declarations ///
@@ -53,6 +45,14 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
     event NebulaEvolution_LevelUpdated(uint256 level,  uint256 amountOfExp);
     ///@notice event emitted when a NFT metadata is updated
     event NebulaEvolution_NFTUpdated(uint256 tokenId, string finalURI);
+
+    /// ERRORS ///
+    ///@notice error emitted when the user already has an NFT
+    error NebulaEvolution_AlreadyHasAnNFT();
+    ///@notice error emitted when the NFT id is bigger than the number of NFTs minted.
+    error NebulaEvolution_InvalidNFTId();
+    ///@notice error emitted when the input level is bigger than the MAX
+    error NebulaEvolution_ThereAreOnlySevenLevels(uint256 level);
 
     /**
         * @notice Constructor to initialize inherited storage variables
