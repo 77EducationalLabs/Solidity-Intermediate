@@ -39,19 +39,44 @@ Solidity Intermediário e Introdução ao Foundry
 Encontrou algum problema ou tem alguma dúvida? Compartilhe conosco na aba [discussões]().
 
 <br>
+
+<details>
+
+<summary>⚠️ Condições para Iniciar esse curso ⚠️</summary>
+Para iniciar esse curso você precisa atender alguns requisitos:
+
+- Ter um conhecimento básico de Solidity. Você pode adquirir esse conhecimento através do curso de [Introdução ao Solidity]()
+- Possuir o [Vscode](https://code.visualstudio.com/download) instalado em sua máquina.
+- Compatibilidade com o Foundry.
+  - No sistema operacional Windows, você precisará interagir com o Foundry através do git bash.
+  - Uma alternativa, que pode ser mais trabalhosa inicialmente, é instalar o [WSL](https://learn.microsoft.com/en-us/windows/wsl/install). Com WSL tudo fica mais simples e prático.
+
 <br>
+</details>
 
 # Sumário
 
 > 👋 Bem-vindo ao repositório do Curso! Aqui você encontrará o conteúdo abordado, bem como conteúdo de apoio para reforço de aprendizado.
 <br>
+
+
+
+<br>
 <details>
 
 <summary>Links Úteis</summary>
 
-- [Chainlist]()
-- [Testnet Faceuts]()
-- [Documentação do Solidity]()
+- [Chainlist](https://chainlist.org/)
+- [Testnet Faceuts](https://cloud.google.com/application/web3/faucet/ethereum/sepolia)
+- [Documentação do Solidity](https://docs.soliditylang.org/en/stable/)
+- [Foundry](https://book.getfoundry.sh/)
+- [Open Zeppelin Wizard](https://wizard.openzeppelin.com/)
+- [EIPs](https://eip.ethereum.org/)
+- [Wierd ERC20](https://github.com/d-xo/weird-erc20?tab=readme-ov-file)
+- [Token Integration Checklist](https://secure-contracts.com/development-guidelines/token_integration.html)
+- [Alchemy](http://www.alchemy.com/)
+- [Safe](https://safe.global/)
+
 <br>
 </details>
 
